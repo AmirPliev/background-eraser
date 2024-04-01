@@ -1,0 +1,19 @@
+[package]
+name = "backend"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+axum = { version = "0.7.4", features = ["multipart"] }
+chrono = "0.4.35"
+serde = { version = "1.0.197", features = ["derive"] }
+serde_json = "1.0.114"
+tokio = { version = "1.36.0", features = ["full"] }
+tower-http = "0.5.2"
+image = "0.24.6"
+ndarray = "0.15.6"
+ort = "1.15.2"
+bytes = "1.6.0"
+futures = "0.3.30"
+base64 = "0.22.0"
