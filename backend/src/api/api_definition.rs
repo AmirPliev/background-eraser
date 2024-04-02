@@ -1,5 +1,5 @@
 use axum::{
-    extract::Json,
+    extract::{Json, DefaultBodyLimit},
     response::IntoResponse,
     routing::post,
     Router,
@@ -9,9 +9,9 @@ use crate::detect;
 use crate::image_proc;
 use image;
 
-use image::DynamicImage;
 use std::io;
 use std::io::Write;
+use image::{DynamicImage, RgbaImage};
 
 #[derive(serde::Serialize)]
 struct JsonResponse {
@@ -28,7 +28,7 @@ struct ImageData {
 pub fn create_api() -> Router {
     Router::new()
         .route("/upload", post(remove_background))
- 
+        .layer(DefaultBodyLimit::max(20_000_000))
 }
 
 async fn remove_background(Json(image_data): Json<ImageData>) -> impl IntoResponse {
@@ -49,31 +49,28 @@ async fn remove_background(Json(image_data): Json<ImageData>) -> impl IntoRespon
 
     print!(" | Performing inference...");
     io::stdout().flush().unwrap();
-    let detections = detect::detect_objects_on_image(&original_image);
-    let main_detection = match detect::find_largest_object(&detections) {
-        Some(detection) => detection,
-        None => {
-            if detections.len() == 0 {
-                return axum::Json(JsonResponse {
-                    cropped_image: "".to_string(),
-                    error_code: 2,
-                })
-            }
-            &detections[0]
-        },
-    };
+    let mut detections = detect::detect_objects_on_image(&original_image);
+    detect::filter_small_objects(&mut detections, (original_image.width() as u64, original_image.height() as u64));
 
-    print!(" | Found: {}, now filtering out the image.", main_detection.class);
+    print!(" | now filtering out the image.");
     io::stdout().flush().unwrap();
-    let rgb = image_proc::create_filtered_image(
-        DynamicImage::ImageRgba8(original_image.into()),
-        &(main_detection.bbox.x1 , main_detection.bbox.y1),
-        &main_detection.mask
-    );
+
+    let original_image = DynamicImage::ImageRgba8(original_image.into());
+    let new_image_data = RgbaImage::new(original_image.width(), original_image.height());
+    let mut new_image = DynamicImage::ImageRgba8(new_image_data.into());
+
+    for detection in detections {
+        image_proc::create_filtered_image(
+            &original_image,
+            &mut new_image,
+            &(detection.bbox.x1 , detection.bbox.y1),
+            &detection.mask
+        );
+    }
 
     print!(" | Translating the final image to base64");
     io::stdout().flush().unwrap();
-    let new_base64_image = match image_proc::image_to_base64(rgb) {
+    let new_base64_image = match image_proc::image_to_base64(new_image) {
         Ok(result) => result,
         Err(error) => {
             println!("Something went wrong with encoding the new image to base64: {:?}", error);

@@ -49,7 +49,18 @@ pub fn detect_objects_on_image(image: &DynamicImage) -> Vec<Detection> {
 }
 
 
-pub fn find_largest_object(detections: &Vec<Detection>) -> Option<&Detection> {
+pub fn filter_small_objects(detections: &mut Vec<Detection>, image_dimensions: (u64, u64))  {
+    let minimum_size = ((image_dimensions.0 * image_dimensions.1) as f64 * 0.15) as u64;
+    detections.retain(|detection| {
+        let width = detection.bbox.x2 - detection.bbox.x1;
+        let height = detection.bbox.y2 - detection.bbox.y1;
+        let size = width * height;
+        return size as u64 > minimum_size;
+    });
+}
+
+
+fn _find_largest_object(detections: &Vec<Detection>) -> Option<&Detection> {
     let mut largest_detection: Option<&Detection> = None;
 
     for detection in detections {

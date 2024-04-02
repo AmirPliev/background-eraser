@@ -22,7 +22,7 @@
 
 	function onFileSelected(newUrl: string) {
 		const encoder = new TextEncoder();
-		if (encoder.encode(newUrl).length > 524288) {
+		if (encoder.encode(newUrl).length > 20_000_000) {
 			latestResponse = {
 				croppedImage: '',
 				errorCode: 80
@@ -31,8 +31,8 @@
 		}
 
 		imageUrl = newUrl;
-		showOriginal = true;
 		loading = false;
+		showOriginal = true;
 		showPreview = false;
 		smallerImageInput = true;
 
@@ -106,6 +106,7 @@
 				<div class="w-full md:w-[45%]">
 					<PreviewImage
 						{loading}
+						oldImageUrl={imageUrl}
 						imageUrl={croppedImageUrl}
 						title={'Preview:'}
 						buttonText="Download"

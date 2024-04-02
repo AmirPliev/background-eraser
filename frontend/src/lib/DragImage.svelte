@@ -56,7 +56,7 @@
 			<span class="font-semibold">Click to upload</span>
 		</p>
 
-		<p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG (MAX: 1MB)</p>
+		<p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG (MAX: 20MB)</p>
 	</div>
 
 	<input
@@ -65,7 +65,7 @@
 		id="dropzone-file"
 		type="file"
 		required
-		accept=".jpg, .jpeg, .png, .webp"
+		accept=".jpg, .jpeg, .png"
 		class="hidden"
 	/>
 </label>

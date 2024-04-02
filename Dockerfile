@@ -52,6 +52,7 @@ EXPOSE 8080
 
 COPY start.sh start.sh
 
+ENV BODY_SIZE_LIMIT="Infinity"
 ENTRYPOINT ["/bin/bash"]
 CMD ["start.sh"]
 

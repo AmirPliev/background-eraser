@@ -1,5 +1,5 @@
 use image;
-use image::{GenericImage, DynamicImage, ImageError, RgbaImage};
+use image::{GenericImage, DynamicImage, ImageError };
 use image::GenericImageView;
 
 use std::io::Cursor;
@@ -11,12 +11,12 @@ pub enum ImageDecodingError{
     ToImageError,
 }
 
-pub fn create_filtered_image(original_image: DynamicImage, offset: &(u32, u32), mask: &Vec<Vec<u8>>) -> DynamicImage {
-    let image_data = RgbaImage::new(original_image.width(), original_image.height());
-    let mut new_image = DynamicImage::ImageRgba8(image_data);
-
+pub fn create_filtered_image(original_image: &DynamicImage, new_image: &mut DynamicImage, offset: &(u32, u32), mask: &Vec<Vec<u8>>)  {
     for (y_index, row) in mask.iter().enumerate() {
         for (x_index, pixel_mask_value) in row.iter().enumerate() {
+            if y_index as u32 >= mask.len() as u32 - 4 || x_index as u32 == row.len() as u32 - 4 {
+                continue;
+            }
             if *pixel_mask_value != 0 {
                 let actual_x_index = offset.0 + x_index as u32 ;
                 let actual_y_index = offset.1 + y_index as u32 ;
@@ -25,7 +25,6 @@ pub fn create_filtered_image(original_image: DynamicImage, offset: &(u32, u32), 
             }
         }
     }
-    new_image
 }
 
 
