@@ -12,8 +12,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - run: chown -R $USER:$USER ~/blog-runner/
-
       - name: Stop
         run: docker-compose down 
 
