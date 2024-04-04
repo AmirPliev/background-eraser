@@ -54,8 +54,8 @@
 		<div class="relative w-full fit-content rounded-xl overflow-hidden">
 			<img
 				alt="bg"
-				src="https://thumbnail.imgbin.com/3/9/9/imgbin-transparent-snow-for-backgrounds-snowflakes-illustration-c8Yp8BTpQMmDbVuTWPTZ6vmn6_t.jpg"
-				class="absolute top-0 left-0 -z-20 bg-red-500 w-full h-full"
+				src="background.png"
+				class="absolute object-cover scale-125 rounded-xl top-0 left-0 -z-20 bg-red-500 w-full h-full"
 			/>
 
 			{#if oldImageUrl && !removeOld}
