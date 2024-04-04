@@ -1,0 +1,21 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Build-And-Deployt:
+    runs-on: [self-hosted]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - run: chown -R $USER:$USER ~/blog-runner/
+
+      - name: Stop
+        run: docker-compose down 
+
+      - name: Rebuild and run detached
+        run: docker-compose up --build -d
