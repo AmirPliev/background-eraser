@@ -107,7 +107,7 @@ fn prepare_input(img: &DynamicImage) -> (Array<f32,IxDyn>, u32, u32) {
 // Returns raw outputs of YOLOv8 network: 1 - detected objects, 2 - segmentation masks
 fn run_model(input:Array<f32,IxDyn>) -> (Array<f32,IxDyn>,Array<f32,IxDyn>) {
     let env = Arc::new(Environment::builder().with_name("YOLOv8").build().unwrap());
-    let model = SessionBuilder::new(&env).unwrap().with_model_from_file("yolov8m-seg.onnx").unwrap();
+    let model = SessionBuilder::new(&env).unwrap().with_model_from_file("/app/model/yolov8m-seg.onnx").unwrap();
     let input_as_values = &input.as_standard_layout();
     let model_inputs = vec![Value::from_array(model.allocator(), input_as_values).unwrap()];
     let outputs = model.run(model_inputs).unwrap();

@@ -30,7 +30,6 @@ COPY --from=frontend-build /app/package-lock.json /app/package-lock.json
 COPY --from=frontend-build /app/package.json /app/package.json
 
 COPY --from=backend-build /app/target/debug/* /app/backend/
-COPY backend/yolov8m-seg.onnx yolov8m-seg.onnx
 
 ENV NODE_ENV=production
 ENV LD_LIBRARY_PATH=/app/backend/
